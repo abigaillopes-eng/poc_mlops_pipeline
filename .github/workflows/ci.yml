@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  python-ci:
+    name: Python CI
+    uses: ./.github/workflows/_python-ci-reusable.yml
+    with:
+      python-version: "3.12"
+      working-directory: "."
+      run-security-scan: true
