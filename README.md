@@ -15,7 +15,20 @@ Template Python com:
 
 ## Como rodar localmente
 
-Crie o ambiente virtual:
+- Crie o ambiente virtual:
 
 ```bash
 python -m venv .venv
+```
+
+- Instale as dependências:
+
+```bash
+pip install -r requirements.txt
+```
+
+- Inicialize o serviço (porta 8000):
+
+```bash
+uvicorn meu_projeto.main:app --reload
+```
