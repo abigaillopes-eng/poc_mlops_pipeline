@@ -1,6 +1,6 @@
 # Meu Projeto Python
 
-![CI](https://github.u-user/seu-repo/actions/workflows/ci.yml/badge.svg
+![CI](https://github.com/poc_pipeline/actions/workflows/ci.yml/badge.svg
 
 Template Python com:
 
