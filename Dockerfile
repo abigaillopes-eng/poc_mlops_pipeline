@@ -5,7 +5,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY pyproject.toml README.md ./
+COPY pyproject.toml README.md requirements.txt ./
+
 COPY calculator_api/src ./src
 
 RUN python -m pip install --upgrade pip --root-user-action=ignore \
