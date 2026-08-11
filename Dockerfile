@@ -8,8 +8,8 @@ WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY calculator_api/src ./src
 
-RUN python -m pip install --upgrade pip \
-    && python -m pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --upgrade pip --root-user-action=ignore \
+    && python -m pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 EXPOSE 8000
 
