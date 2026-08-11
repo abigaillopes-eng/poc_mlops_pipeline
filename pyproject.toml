@@ -3,13 +3,13 @@ requires = ["setuptools>=70.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "poc_pipeline_python"
+name = "calculator_api"
 version = "0.1.0"
 description = "Template Python com FastAPI, testes e GitHub Actions reutilizável"
 readme = "README.md"
 requires-python = ">=3.12"
 authors = [
-  { name = "Seu Nome", email = "seu.email@example.com" }
+  { name = "Abigail", email = "abigail.lopes@optdriven.com" }
 ]
 dependencies = [
   "fastapi>=0.115.0",
@@ -30,34 +30,17 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src"]
-addopts = [
-  "--strict-markers",
-  "--strict-config"
-]
-
-[tool.coverage.run]
-branch = true
-source = ["src"]
-
-[tool.coverage.report]
-show_missing = true
-skip_covered = false
-fail_under = 80
-
 [tool.ruff]
 line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
 select = [
-  "E",
-  "F",
-  "I",
-  "B",
-  "UP"
+    "E",
+    "F",
+    "I",
+    "B",
+    "UP"
 ]
 ignore = []
 
@@ -69,5 +52,32 @@ line-ending = "auto"
 [tool.mypy]
 python_version = "3.12"
 strict = true
-mypy_path = "src"
+mypy_path = "."
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests"
+]
+pythonpath = [
+    "."
+]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=calculator_api",
+    "--cov-report=term-missing"
+]
+
+[tool.coverage.run]
+branch = true
+source = [
+    "calculator_api"
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 80
+
 plugins = []

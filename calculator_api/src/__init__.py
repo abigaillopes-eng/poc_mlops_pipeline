@@ -1,4 +1,4 @@
-"""Pacote principal do meu_projeto."""
+"""Pacote principal do projeto da calculadora."""
 
 __all__ = ["__version__"]
 
