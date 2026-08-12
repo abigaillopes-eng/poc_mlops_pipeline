@@ -266,13 +266,23 @@ class OpenAICompatibleMathLLMClient:
             "Content-Type": "application/json",
         }
 
-        response = httpx.post(
-            f"{self.base_url}/chat/completions",
-            headers=headers,
-            json=payload,
-            timeout=self.timeout_seconds,
-        )
-        response.raise_for_status()
+        try:
+            response = httpx.post(
+                f"{self.base_url}/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=self.timeout_seconds,
+            )
+            response.raise_for_status()
+        except httpx.HTTPError as exc:
+            return MathLLMResult(
+                question=question,
+                answer=f"Falha ao consultar o LLM externo: {exc}",
+                numeric_result=None,
+                provider=self.provider,
+                model=self.model,
+                confidence=0.0,
+            )
 
         response_data = cast(dict[str, Any], response.json())
         choices = cast(list[dict[str, Any]], response_data.get("choices", []))

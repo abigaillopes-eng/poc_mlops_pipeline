@@ -283,11 +283,30 @@ jobs:
 
     env:
       LLM_PROVIDER: openai-compatible
-      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-      LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
-      LLM_MODEL: ${{ secrets.LLM_MODEL }}
+      LLM_API_KEY: ${{ vars.LLM_API_KEY }}
+      LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+      LLM_MODEL: ${{ vars.LLM_MODEL }}
 
     steps:
+      - name: Validar vars do LLM externo
+        run: |
+          if [ -z "${LLM_API_KEY}" ]; then
+            echo "LLM_API_KEY não configurada."
+            exit 1
+          fi
+
+          if [ -z "${LLM_BASE_URL}" ]; then
+            echo "LLM_BASE_URL não configurada."
+            exit 1
+          fi
+
+          if [ -z "${LLM_MODEL}" ]; then
+            echo "LLM_MODEL não configurado."
+            exit 1
+          fi
+
+          echo "vars obrigatórios encontrados."
+
       - name: Download da imagem Docker
         uses: actions/download-artifact@v4
         with:
@@ -329,9 +348,16 @@ jobs:
 
       - name: Smoke test do endpoint /ask-math com LLM externo
         run: |
-          curl -fsS -X POST http://127.0.0.1:8000/ask-math \
+          echo "=== CHAMANDO ENDPOINT ==="
+
+          curl -sS -X POST http://127.0.0.1:8000/ask-math \
             -H "Content-Type: application/json" \
             -d '{"question":"Quanto é 2 + 2?"}'
+
+          echo ""
+          echo "=== LOGS DO CONTAINER ==="
+
+          docker logs calculator-api-external-llm
 
       - name: Encerrar container externo
         if: always()
@@ -339,3 +365,25 @@ jobs:
           docker logs calculator-api-external-llm || true
           docker stop calculator-api-external-llm || true
           docker rm calculator-api-external-llm || true
+      
+      - name: Debug vars
+        run: |
+          echo "Provider=${LLM_PROVIDER}"
+
+          if [ -z "${LLM_API_KEY}" ]; then
+            echo "API KEY VAZIA"
+          else
+            echo "API KEY OK"
+          fi
+
+          if [ -z "${LLM_BASE_URL}" ]; then
+            echo "BASE URL VAZIA"
+          else
+            echo "BASE URL OK"
+          fi
+
+          if [ -z "${LLM_MODEL}" ]; then
+            echo "MODEL VAZIO"
+          else
+            echo "MODEL OK"
+          fi
