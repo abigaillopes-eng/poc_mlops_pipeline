@@ -32,7 +32,7 @@ class LocalMathLLMClient:
     - evitar dependência de secrets no CI/CD.
     """
 
-    provider = os.getenv("LLM_PROVIDER", "local").lower()
+    provider = "local"
     model = "deterministic-math-solver-v1"
 
     def answer_math_question(self, question: str) -> MathLLMResult:
