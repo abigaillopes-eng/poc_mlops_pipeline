@@ -121,6 +121,7 @@ jobs:
 
     env:
       LLM_PROVIDER: local
+      PYTHONPATH: ${{ github.workspace }}
 
     steps:
       - name: Checkout repository
