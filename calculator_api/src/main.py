@@ -1,5 +1,7 @@
 """Aplicação FastAPI da calculadora."""
 
+from typing import Annotated
+
 from fastapi import Depends, FastAPI
 from pydantic import BaseModel
 
@@ -94,7 +96,7 @@ def divide_endpoint(payload: BinaryOperationRequest) -> OperationResponse:
 @app.post("/ask-math", response_model=MathAnswerResponse)
 def ask_math_question(
     payload: MathQuestionRequest,
-    service: MathQuestionService = Depends(get_math_question_service),
+    service: Annotated[MathQuestionService, Depends(get_math_question_service)],
 ) -> MathAnswerResponse:
     """Responde qualquer pergunta matemática usando a camada LLM."""
     return service.answer_question(payload.question)
