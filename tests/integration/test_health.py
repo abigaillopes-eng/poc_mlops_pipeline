@@ -2,7 +2,17 @@
 
 from fastapi.testclient import TestClient
 
-from calculator_api.src.main import app
+from calculator_api.src.llm.clients import LocalMathLLMClient
+from calculator_api.src.llm.service import MathQuestionService
+from calculator_api.src.main import app, get_math_question_service
+
+
+def override_math_question_service() -> MathQuestionService:
+    """Sobrescreve o serviço LLM para usar provider local nos testes."""
+    return MathQuestionService(llm_client=LocalMathLLMClient())
+
+
+app.dependency_overrides[get_math_question_service] = override_math_question_service
 
 client = TestClient(app)
 

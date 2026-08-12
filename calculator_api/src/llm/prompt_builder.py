@@ -15,7 +15,4 @@ class MathPromptBuilder:
 
     def build_user_prompt(self, question: str) -> str:
         """Cria o prompt de usuário."""
-        return (
-            "Resolva a seguinte pergunta matemática de forma objetiva:\n\n"
-            f"{question}"
-        )
+        return f"Resolva a seguinte pergunta matemática de forma objetiva:\n\n{question}"

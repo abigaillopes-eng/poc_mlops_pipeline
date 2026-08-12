@@ -9,17 +9,40 @@ import pytest
 from calculator_api.src.llm.clients import LocalMathLLMClient
 from calculator_api.src.llm.service import MathQuestionService
 
-GOLDEN_DATASET_PATH = Path("data/golden_math_qa.jsonl")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+GOLDEN_DATASET_PATH = PROJECT_ROOT / "data" / "golden_math_qa.jsonl"
 
 
 def load_golden_dataset() -> list[dict[str, Any]]:
     """Carrega o dataset de ouro em formato JSONL."""
+    if not GOLDEN_DATASET_PATH.exists():
+        raise FileNotFoundError(
+            f"Dataset de ouro não encontrado em: {GOLDEN_DATASET_PATH}"
+        )
+
     records: list[dict[str, Any]] = []
 
-    with GOLDEN_DATASET_PATH.open("r", encoding="utf-8") as file:
-        for line in file:
-            if line.strip():
-                records.append(json.loads(line))
+    with GOLDEN_DATASET_PATH.open("r", encoding="utf-8-sig") as file:
+        for line_number, line in enumerate(file, start=1):
+            clean_line = line.strip()
+
+            if not clean_line:
+                continue
+
+            try:
+                records.append(json.loads(clean_line))
+            except json.JSONDecodeError as exc:
+                raise ValueError(
+                    "Linha inválida no dataset de ouro. "
+                    f"Arquivo={GOLDEN_DATASET_PATH}, "
+                    f"linha={line_number}, "
+                    f"conteudo={clean_line!r}"
+                ) from exc
+
+    if not records:
+        raise ValueError(
+            f"Dataset de ouro está vazio: {GOLDEN_DATASET_PATH}"
+        )
 
     return records
 

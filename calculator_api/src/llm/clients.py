@@ -198,7 +198,7 @@ class LocalMathLLMClient:
                 return left / right
 
             if isinstance(node.op, ast.Pow):
-                return left**right
+                return float(left**right)
 
             if isinstance(node.op, ast.Mod):
                 return left % right
@@ -310,9 +310,7 @@ def create_default_math_llm_client() -> MathLLMClient:
         model = os.getenv("LLM_MODEL", "gpt-4o-mini")
 
         if not api_key:
-            raise RuntimeError(
-                "LLM_PROVIDER=openai-compatible exige a variável LLM_API_KEY."
-            )
+            raise RuntimeError("LLM_PROVIDER=openai-compatible exige a variável LLM_API_KEY.")
 
         return OpenAICompatibleMathLLMClient(
             api_key=api_key,

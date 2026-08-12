@@ -1,6 +1,6 @@
 """Aplicação FastAPI da calculadora."""
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from pydantic import BaseModel
 
 from calculator_api.src.calculator import (
@@ -11,14 +11,13 @@ from calculator_api.src.calculator import (
 )
 from calculator_api.src.llm.factory import create_math_question_service
 from calculator_api.src.llm.schemas import MathAnswerResponse, MathQuestionRequest
+from calculator_api.src.llm.service import MathQuestionService
 
 app = FastAPI(
     title="Calculator API",
     description="POC de calculadora com CI/CD e camada LLM.",
     version="0.2.0",
 )
-
-math_question_service = create_math_question_service()
 
 
 class BinaryOperationRequest(BaseModel):
@@ -32,6 +31,14 @@ class OperationResponse(BaseModel):
     """Resposta padrão das operações."""
 
     result: float
+
+
+def get_math_question_service() -> MathQuestionService:
+    """Cria o serviço de perguntas matemáticas.
+
+    Esta função existe para permitir sobrescrita nos testes.
+    """
+    return create_math_question_service()
 
 
 @app.get("/health")
@@ -85,6 +92,9 @@ def divide_endpoint(payload: BinaryOperationRequest) -> OperationResponse:
 
 
 @app.post("/ask-math", response_model=MathAnswerResponse)
-def ask_math_question(payload: MathQuestionRequest) -> MathAnswerResponse:
+def ask_math_question(
+    payload: MathQuestionRequest,
+    service: MathQuestionService = Depends(get_math_question_service),
+) -> MathAnswerResponse:
     """Responde qualquer pergunta matemática usando a camada LLM."""
-    return math_question_service.answer_question(payload.question)
+    return service.answer_question(payload.question)

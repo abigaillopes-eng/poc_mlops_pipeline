@@ -10,11 +10,19 @@ from calculator_api.src.llm.service import MathQuestionService
 
 @pytest.mark.llm_external
 def test_external_llm_should_answer_math_question() -> None:
+    """Valida se o provider externo responde uma pergunta matemática simples.
+
+    Este teste não deve rodar em pytest comum.
+    Ele só roda quando RUN_EXTERNAL_LLM_TESTS=true.
+    """
+    if os.getenv("RUN_EXTERNAL_LLM_TESTS") != "true":
+        pytest.skip("Teste externo ignorado. Defina RUN_EXTERNAL_LLM_TESTS=true para executar.")
+
     if os.getenv("LLM_PROVIDER") != "openai-compatible":
-        pytest.skip("Teste externo ignorado porque LLM_PROVIDER não é openai-compatible.")
+        pytest.skip("LLM_PROVIDER não é openai-compatible.")
 
     if not os.getenv("LLM_API_KEY"):
-        pytest.skip("Teste externo ignorado porque LLM_API_KEY não foi configurada.")
+        pytest.skip("LLM_API_KEY não foi configurada.")
 
     service = MathQuestionService(llm_client=create_default_math_llm_client())
 
