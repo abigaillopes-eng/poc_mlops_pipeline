@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -12,9 +12,22 @@ on:
       - develop
 
   workflow_dispatch:
+    inputs:
+      run_external_llm_eval:
+        description: "Executar avaliação com LLM externo?"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 permissions:
   contents: read
+
+concurrency:
+  group: cicd-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
@@ -36,7 +49,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
 
-      - name: Executar Ruff
+      - name: Executar Ruff check
         run: |
           ruff check .
 
@@ -73,6 +86,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: type-check
 
+    env:
+      LLM_PROVIDER: local
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -92,16 +108,53 @@ jobs:
         run: |
           pytest --cov=calculator_api --cov-report=term-missing --cov-report=xml
 
-      - name: Upload do relatório de coverage
+      - name: Upload do coverage.xml
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage.xml
 
-  security:
-    name: 4 - Security Scan com Bandit
+  llm-quality-local:
+    name: 4 - LLM Quality Local
     runs-on: ubuntu-latest
     needs: test
+
+    env:
+      LLM_PROVIDER: local
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Executar quality tests com dataset de ouro
+        run: |
+          pytest tests/quality -m quality
+
+      - name: Gerar relatório LLM local
+        run: |
+          python scripts/evaluate_math_llm.py
+
+      - name: Upload do relatório LLM local
+        uses: actions/upload-artifact@v4
+        with:
+          name: llm-quality-report
+          path: llm_quality_report.json
+
+  security:
+    name: 5 - Security Scan com Bandit
+    runs-on: ubuntu-latest
+    needs: llm-quality-local
 
     steps:
       - name: Checkout repository
@@ -122,8 +175,8 @@ jobs:
         run: |
           bandit -r calculator_api
 
-  build:
-    name: 5 - Build Docker
+  build-docker:
+    name: 6 - Build Docker
     runs-on: ubuntu-latest
     needs: security
 
@@ -134,7 +187,64 @@ jobs:
       - name: Build da imagem Docker
         run: |
           docker build -t calculator-api:${{ github.sha }} .
+          docker tag calculator-api:${{ github.sha }} calculator-api:ci
 
-      - name: Verificar imagem criada
+      - name: Verificar imagens criadas
         run: |
           docker images
+
+      - name: Salvar imagem Docker como arquivo
+        run: |
+          docker save calculator-api:ci -o calculator-api-image.tar
+
+      - name: Upload da imagem Docker como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: calculator-api-image
+          path: calculator-api-image.tar
+
+  deploy-dev:
+    name: 7 - Deploy DEV Simulado + Smoke Test
+    runs-on: ubuntu-latest
+    needs: build-docker
+    environment:
+      name: dev
+
+    env:
+      LLM_PROVIDER: local
+
+    steps:
+      - name: Download da imagem Docker
+        uses: actions/download-artifact@v4
+        with:
+          name: calculator-api-image
+
+      - name: Carregar imagem Docker
+        run: |
+          docker load -i calculator-api-image.tar
+
+      - name: Subir container da API
+        run: |
+          docker run -d \
+            --name calculator-api-dev \
+            -p 8000:8000 \
+            -e LLM_PROVIDER="${LLM_PROVIDER}" \
+            calculator-api:ci
+
+      - name: Aguardar API inicializar
+        run: |
+          sleep 5
+
+      - name: Verificar container
+        run: |
+          docker ps
+          docker logs calculator-api-dev
+
+      - name: Smoke test do endpoint /health
+        run: |
+          curl -f http://localhost:8000/health
+
+      - name: Smoke test do endpoint /ask-math
+        run: |
+          curl -f -X POST http://localhost:8000/ask-math \
+            -H "

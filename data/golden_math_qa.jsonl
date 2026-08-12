@@ -1,10 +1,21 @@
-{"id":"math_001","question":"Quanto é 2 + 2?","expected_numeric_result":4.0,"tolerance":0.0001}
-{"id":"math_002","question":"Calcule 10 - 3","expected_numeric_result":7.0,"tolerance":0.0001}
-{"id":"math_003","question":"Quanto é 6 vezes 7?","expected_numeric_result":42.0,"tolerance":0.0001}
-{"id":"math_004","question":"Quanto é 20 dividido por 4?","expected_numeric_result":5.0,"tolerance":0.0001}
-{"id":"math_005","question":"Quanto é (8 + 2) * 3?","expected_numeric_result":30.0,"tolerance":0.0001}
-{"id":"math_006","question":"Quanto é 2 elevado a 3?","expected_numeric_result":8.0,"tolerance":0.0001}
-{"id":"math_007","question":"Qual é a raiz quadrada de 81?","expected_numeric_result":9.0,"tolerance":0.0001}
-{"id":"math_008","question":"Quanto é 10% de 200?","expected_numeric_result":20.0,"tolerance":0.0001}
-{"id":"math_009","question":"Resolva 100 / (5 * 2)","expected_numeric_result":10.0,"tolerance":0.0001}
-{"id":"math_010","question":"Calcule 7 mais 8 menos 3","expected_numeric_result":12.0,"tolerance":0.0001}
+// {"id":"math_001","question":"Quanto é 2 + 2?","expected_numeric_result":4.0,"tolerance":0.0001}
+// {"id":"math_002","question":"Calcule 10 - 3","expected_numeric_result":7.0,"tolerance":0.0001}
+// {"id":"math_003","question":"Quanto é 6 vezes 7?","expected_numeric_result":42.0,"tolerance":0.0001}
+// {"id":"math_004","question":"Quanto é 20 dividido por 4?","expected_numeric_result":5.0,"tolerance":0.0001}
+// {"id":"math_005","question":"Quanto é (8 + 2) * 3?","expected_numeric_result":30.0,"tolerance":0.0001}
+// {"id":"math_006","question":"Quanto é 2 elevado a 3?","expected_numeric_result":8.0,"tolerance":0.0001}
+// {"id":"math_007","question":"Qual é a raiz quadrada de 81?","expected_numeric_result":9.0,"tolerance":0.0001}
+// {"id":"math_008","question":"Quanto é 10% de 200?","expected_numeric_result":20.0,"tolerance":0.0001}
+// {"id":"math_009","question":"Resolva 100 / (5 * 2)","expected_numeric_result":10.0,"tolerance":0.0001}
+// {"id":"math_010","question":"Calcule 7 mais 8 menos 3","expected_numeric_result":12.0,"tolerance":0.0001}
+
+{"id":"math_001","question":"Quanto é 2 + 2?","expected_numeric_result":4.0,"tolerance":0.0001,"category":"sum","difficulty":"easy"}
+{"id":"math_002","question":"Calcule 10 - 3","expected_numeric_result":7.0,"tolerance":0.0001,"category":"subtraction","difficulty":"easy"}
+{"id":"math_003","question":"Quanto é 6 vezes 7?","expected_numeric_result":42.0,"tolerance":0.0001,"category":"multiplication","difficulty":"easy"}
+{"id":"math_004","question":"Quanto é 20 dividido por 4?","expected_numeric_result":5.0,"tolerance":0.0001,"category":"division","difficulty":"easy"}
+{"id":"math_005","question":"Quanto é (8 + 2) * 3?","expected_numeric_result":30.0,"tolerance":0.0001,"category":"precedence","difficulty":"medium"}
+{"id":"math_006","question":"Quanto é 2 elevado a 3?","expected_numeric_result":8.0,"tolerance":0.0001,"category":"power","difficulty":"medium"}
+{"id":"math_007","question":"Qual é a raiz quadrada de 81?","expected_numeric_result":9.0,"tolerance":0.0001,"category":"sqrt","difficulty":"medium"}
+{"id":"math_008","question":"Quanto é 10% de 200?","expected_numeric_result":20.0,"tolerance":0.0001,"category":"percentage","difficulty":"medium"}
+{"id":"math_009","question":"Resolva 100 / (5 * 2)","expected_numeric_result":10.0,"tolerance":0.0001,"category":"precedence","difficulty":"medium"}
+{"id":"math_010","question":"Calcule 7 mais 8 menos 3","expected_numeric_result":12.0,"tolerance":0.0001,"category":"mixed","difficulty":"easy"}

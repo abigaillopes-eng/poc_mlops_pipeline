@@ -30,7 +30,8 @@ addopts = [
     "--strict-config"
 ]
 markers = [
-    "quality: testes de qualidade usando dataset de ouro"
+    "quality: testes de qualidade usando dataset de ouro",
+    "llm_external: testes opcionais que usam LLM externo real"
 ]
 
 [tool.coverage.run]
