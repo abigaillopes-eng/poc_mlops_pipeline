@@ -3,18 +3,13 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from typing import Any
-
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
 
 from calculator_api.src.llm.clients import create_default_math_llm_client
 from calculator_api.src.llm.service import MathQuestionService
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATASET_PATH = PROJECT_ROOT / "data" / "golden_math_qa.jsonl"
 REPORT_PATH = PROJECT_ROOT / "llm_quality_report.json"
 
