@@ -301,7 +301,7 @@ jobs:
         run: |
           docker run -d \
             --name calculator-api-external-llm \
-            -p 8001:8000 \
+            -p 8000:8000 \
             -e LLM_PROVIDER="${LLM_PROVIDER}" \
             -e LLM_API_KEY="${LLM_API_KEY}" \
             -e LLM_BASE_URL="${LLM_BASE_URL}" \
@@ -312,7 +312,7 @@ jobs:
         run: |
           for i in {1..30}; do
             echo "Tentativa $i/30..."
-            if curl -fsS http://127.0.0.1:8001/health; then
+            if curl -fsS http://127.0.0.1:8000/health; then
               echo "API respondeu com sucesso."
               exit 0
             fi
@@ -329,7 +329,7 @@ jobs:
 
       - name: Smoke test do endpoint /ask-math com LLM externo
         run: |
-          curl -fsS -X POST http://127.0.0.1:8001/ask-math \
+          curl -fsS -X POST http://127.0.0.1:8000/ask-math \
             -H "Content-Type: application/json" \
             -d '{"question":"Quanto é 2 + 2?"}'
 
