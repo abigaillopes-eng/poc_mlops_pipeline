@@ -64,3 +64,21 @@ def test_divide_endpoint_should_return_result() -> None:
 
     assert response.status_code == 200
     assert response.json() == {"result": 2}
+
+
+def test_ask_math_endpoint_should_answer_question() -> None:
+    response = client.post(
+        "/ask-math",
+        json={
+            "question": "Quanto é 2 + 2?",
+        },
+    )
+
+    assert response.status_code == 200
+
+    body = response.json()
+
+    assert body["question"] == "Quanto é 2 + 2?"
+    assert body["numeric_result"] == 4
+    assert body["provider"] == "local"
+    assert "4" in body["answer"]

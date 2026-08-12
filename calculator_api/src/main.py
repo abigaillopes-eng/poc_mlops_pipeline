@@ -9,12 +9,16 @@ from calculator_api.src.calculator import (
     subtract_numbers,
     sum_numbers,
 )
+from calculator_api.src.llm.factory import create_math_question_service
+from calculator_api.src.llm.schemas import MathAnswerResponse, MathQuestionRequest
 
 app = FastAPI(
     title="Calculator API",
-    description="POC de calculadora com CI/CD usando GitHub Actions.",
-    version="0.1.0",
+    description="POC de calculadora com CI/CD e camada LLM.",
+    version="0.2.0",
 )
+
+math_question_service = create_math_question_service()
 
 
 class BinaryOperationRequest(BaseModel):
@@ -78,3 +82,9 @@ def divide_endpoint(payload: BinaryOperationRequest) -> OperationResponse:
     )
 
     return OperationResponse(result=result)
+
+
+@app.post("/ask-math", response_model=MathAnswerResponse)
+def ask_math_question(payload: MathQuestionRequest) -> MathAnswerResponse:
+    """Responde qualquer pergunta matemática usando a camada LLM."""
+    return math_question_service.answer_question(payload.question)

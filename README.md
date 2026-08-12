@@ -30,5 +30,5 @@ pip install -r requirements.txt
 - Inicialize o serviço (porta 8000):
 
 ```bash
-uvicorn meu_projeto.main:app --reload
+python -m uvicorn calculator_api.src.main:app --reload
 ```
