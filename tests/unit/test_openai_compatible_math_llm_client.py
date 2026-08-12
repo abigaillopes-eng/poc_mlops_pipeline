@@ -36,17 +36,7 @@ def test_openai_compatible_client_should_return_answer(
         assert json["model"] == "fake-model"
         assert timeout == 30.0
 
-        return FakeResponse(
-            {
-                "choices": [
-                    {
-                        "message": {
-                            "content": "O resultado é 4."
-                        }
-                    }
-                ]
-            }
-        )
+        return FakeResponse({"choices": [{"message": {"content": "O resultado é 4."}}]})
 
     monkeypatch.setattr(httpx, "post", fake_post)
 
